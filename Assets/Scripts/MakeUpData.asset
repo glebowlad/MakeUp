@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b30d934073cab248b4c027ab73545b1, type: 3}
+  m_Name: MakeUpData
+  m_EditorClassIdentifier: 
+  eyeShadows:
+  - {fileID: 21300000, guid: 7c7e9e74a17622648b965e81db844375, type: 3}
+  - {fileID: 21300000, guid: 7ea78e0004024ae448b44349dd3a8599, type: 3}
+  - {fileID: 21300000, guid: df4d139edf699634aa0663ed28586046, type: 3}
+  - {fileID: 21300000, guid: bd760460eb2e9f145b3c6993e03487dc, type: 3}
+  - {fileID: 21300000, guid: 8ed282f542c64fa48979f76c61cf2e43, type: 3}
+  - {fileID: 21300000, guid: 1873d30f5dd7cb749bede0ac91e48f1a, type: 3}
+  - {fileID: 21300000, guid: 87b140daae3da6a40b6c410f25c2eac2, type: 3}
+  - {fileID: 21300000, guid: d14b5b1bd582cfe4cb0bfefdfa89db52, type: 3}
+  - {fileID: 21300000, guid: f3405d78c6248e74ca7b79fbc2a605b6, type: 3}
+  eyeShadowColors:
+  - {r: 0.9607844, g: 0.69803923, b: 1, a: 0}
+  - {r: 0.8078432, g: 0.4784314, b: 0.7686275, a: 0}
+  - {r: 0.69803923, g: 0.7254902, b: 1, a: 0}
+  - {r: 0.87843144, g: 0.6, b: 0.41176474, a: 0}
+  - {r: 0.48627454, g: 0.8196079, b: 0.9960785, a: 0}
+  - {r: 0.5411765, g: 0.9215687, b: 0.7490196, a: 0}
+  - {r: 1, g: 0.69803923, b: 0.69803923, a: 0}
+  - {r: 0.9607844, g: 0.427451, b: 0.32156864, a: 0}
+  - {r: 0.9843138, g: 0.82745105, b: 0.34901962, a: 0}
+  lipsticks:
+  - {fileID: 21300000, guid: e857c86324b090f4697c4d6aea9ac35c, type: 3}
+  - {fileID: 21300000, guid: 85d10d1fef443df4cb196dd80d372b3c, type: 3}
+  - {fileID: 21300000, guid: a531901f81fa7f744a626e0acb51409a, type: 3}
+  - {fileID: 21300000, guid: 690720b558a0aae49be3539e5c01188c, type: 3}
+  - {fileID: 21300000, guid: 79c158e1561ab1f4297d9e60ee747d7a, type: 3}
+  - {fileID: 21300000, guid: fcbc4e5253c2f924485eb759a4592035, type: 3}
+  blushes:
+  - {fileID: 21300000, guid: 79b26578a2f12bb4a90dfe14e53c9ffd, type: 3}
+  - {fileID: 21300000, guid: 29c7306476fd0f146bf5a16761cbc8ee, type: 3}
+  - {fileID: 21300000, guid: b506940178c88514c9be17dc6f42dc55, type: 3}
+  - {fileID: 21300000, guid: 37be3b5c4bae2804586424c9db217705, type: 3}
+  - {fileID: 21300000, guid: 867f31aef2d22254eae4e5605f3fd6ab, type: 3}
+  - {fileID: 21300000, guid: d47f270c6302da0428d98bf8847058ca, type: 3}
+  - {fileID: 21300000, guid: adfa96dcd0af41b4ba3f26ff3cf0744e, type: 3}
+  - {fileID: 21300000, guid: a37e8ac8da115e74c8680e73ba9059e4, type: 3}
+  - {fileID: 21300000, guid: 8a94bc201d7de084da18abe10322dc86, type: 3}
+  blushColors:
+  - {r: 1, g: 0.69803923, b: 0.8117648, a: 0}
+  - {r: 0.95294124, g: 0.5294118, b: 0.6392157, a: 0}
+  - {r: 1, g: 0.7607844, b: 0.69803923, a: 0}
+  - {r: 0.87843144, g: 0.6313726, b: 0.4666667, a: 0}
+  - {r: 1, g: 0.5882353, b: 0.5882353, a: 0}
+  - {r: 0.9215687, g: 0.5764706, b: 0.5411765, a: 0}
+  - {r: 0.9490197, g: 0.6901961, b: 0.89019614, a: 0}
+  - {r: 0.98823535, g: 0.53333336, b: 0.44705886, a: 0}
+  - {r: 0.9843138, g: 0.69803923, b: 0.5254902, a: 0}
