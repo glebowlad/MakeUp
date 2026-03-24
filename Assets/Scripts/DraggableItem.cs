@@ -8,10 +8,10 @@ public class DraggableItem : MonoBehaviour
     public ItemType type;
     public MakeUpData makeUpData;
     public int colorIndex;
-    private Vector3 startPosition;
+    private Vector3 _startPosition;
     private void Awake()
     {
-        startPosition = transform.position;
+        _startPosition = transform.position;
  
     }
 }

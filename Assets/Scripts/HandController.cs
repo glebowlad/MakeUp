@@ -7,91 +7,109 @@ using System;
 public class HandController : MonoBehaviour, IDragHandler, IEndDragHandler
 {
     [Header("Links")]
-    [SerializeField] private RectTransform faceZoneUI; 
-    [SerializeField] private GirlController girl;
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private DraggableItem eyeshadowBrush;
-    [SerializeField] private DraggableItem blushBrush;
-    private DraggableItem selectedColor;
-    private Vector3 handDefaultPos;
-    private DraggableItem currentItem;
-    private Vector3 itemDefaultPos;
-    private Transform itemDefaultParent;
-    private bool canDrag = false;
-    private RectTransform rectTransform;
+    [SerializeField] private RectTransform _faceZoneUI; 
+    [SerializeField] private GirlController _girl;
+    [SerializeField] private DraggableItem _eyeshadowBrush;
+    [SerializeField] private DraggableItem _blushBrush;
+
+    private RectTransform _rectTransform;
+    private Transform _itemDefaultParent;
+    private DraggableItem _currentItem;
+    private DraggableItem _selectedColor;
+    private Vector3 _handDefaultPos;
+    private Vector3 _itemDefaultPos;
+    private bool _canDrag = false;
 
     private void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
-        handDefaultPos = rectTransform.position;
+        _rectTransform = GetComponent<RectTransform>();
+        _handDefaultPos = _rectTransform.position;
     }
 
     
     public void OnItemClicked(DraggableItem colorItem)
     {
-        if (currentItem != null)
+        if (_currentItem != null)
         {
-            
+
             ReturnItem(() => OnItemClicked(colorItem));
             return;
         }
-        selectedColor = colorItem;
-        DraggableItem tool = null;
-        if (colorItem.type == ItemType.Eyeshadow) tool = eyeshadowBrush;
-        else if (colorItem.type == ItemType.Blushes) tool = blushBrush;
-        else tool = colorItem; 
 
-        currentItem = tool;
-        itemDefaultPos=currentItem.transform.position;
-        itemDefaultParent=currentItem.transform.parent;
-        canDrag = false;
+        PrepareItemData(colorItem);
 
+        MakeSequence(colorItem);
+    }
+
+    private void MakeSequence(DraggableItem colorItem)
+    {
         Sequence takeSequence = DOTween.Sequence();
-        takeSequence.Append(rectTransform.DOMove(tool.transform.position, 0.5f));
-        takeSequence.AppendCallback(() =>
-        {
-            tool.transform.SetParent(transform); 
-            tool.transform.SetSiblingIndex(1);
-            tool.transform.localPosition = Vector3.zero;
-            if (tool.TryGetComponent<Image>(out var img)) img.raycastTarget = false;
 
-        });
+        takeSequence.Append(_rectTransform.DOMove(_itemDefaultPos, 0.5f));
+        takeSequence.AppendCallback(() => AttachHand(_currentItem));
+
 
         if (colorItem.type == ItemType.Eyeshadow || colorItem.type == ItemType.Blushes)
         {
-            takeSequence.Append(rectTransform.DOMove(colorItem.transform.position, 0.4f));
-            takeSequence.Append(rectTransform.DOShakePosition(0.4f, 15f, 10));
-            takeSequence.AppendCallback(() => {
-                
-                Color selectedColorVal = colorItem.makeUpData.GetColor(colorItem.type, colorItem.colorIndex);
-                var brushTip = currentItem.transform.GetChild(0).GetComponent<Image>();
+            takeSequence.Append(_rectTransform.DOMove(colorItem.transform.position, 0.4f));
+            takeSequence.Append(_rectTransform.DOShakePosition(0.4f, 15f, 10));
+            takeSequence.AppendCallback(() => PaintBrush(colorItem));
 
-                if (brushTip != null)
-                {
-                    brushTip.color = selectedColorVal;
-                    brushTip.DOFade(1f, 0.1f);
-                }
-            });
 
         }
 
-        Vector3 readyPos = (faceZoneUI.position + tool.transform.position) / 2;
-        takeSequence.Append(rectTransform.DOMove(readyPos, 0.5f));
-        takeSequence.OnComplete(() =>canDrag = true);
+        Vector3 readyPos = (_faceZoneUI.position + _itemDefaultPos) / 2;
+        takeSequence.Append(_rectTransform.DOMove(readyPos, 0.5f));
+        takeSequence.OnComplete(() => _canDrag = true);
+    }
+
+    private void PrepareItemData(DraggableItem colorItem)
+    {
+        _selectedColor = colorItem;
+        _canDrag = false;
+        _currentItem = colorItem.type switch
+        {
+            ItemType.Eyeshadow => _eyeshadowBrush,
+            ItemType.Blushes => _blushBrush,
+            _ => colorItem
+        };
+
+        _itemDefaultPos = _currentItem.transform.position;
+        _itemDefaultParent = _currentItem.transform.parent;
+    }
+
+    private void PaintBrush(DraggableItem colorItem)
+    {
+        Color selectedColorVal = colorItem.makeUpData.GetColor(colorItem.type, colorItem.colorIndex);
+        var brushTip = _currentItem.transform.GetChild(0).GetComponent<Image>();
+
+        if (brushTip != null)
+        {
+            brushTip.color = selectedColorVal;
+            brushTip.DOFade(1f, 0.1f);
+        }
+    }
+
+    private void AttachHand(DraggableItem tool)
+    {
+        tool.transform.SetParent(transform);
+        tool.transform.SetSiblingIndex(1);
+        tool.transform.localPosition = Vector3.zero;
+        if (tool.TryGetComponent<Image>(out var img)) img.raycastTarget = false;
     }
 
     private void ReturnItem(Action onDone = null)
     {
-        canDrag = false;
-        DraggableItem itemToReturn = currentItem; 
+        _canDrag = false;
+        DraggableItem itemToReturn = _currentItem; 
 
-        rectTransform.DOMove(itemDefaultPos, 0.5f).OnComplete(() => {
+        _rectTransform.DOMove(_itemDefaultPos, 0.5f).OnComplete(() => {
             
-            itemToReturn.transform.SetParent(itemDefaultParent);
-            itemToReturn.transform.position = itemDefaultPos;
+            itemToReturn.transform.SetParent(_itemDefaultParent);
+            itemToReturn.transform.position = _itemDefaultPos;
             if (itemToReturn.TryGetComponent<Image>(out var img)) img.raycastTarget = true;
 
-            currentItem = null;
+            _currentItem = null;
             if (onDone != null) onDone.Invoke();
             else ReturnHand();
         });
@@ -99,13 +117,13 @@ public class HandController : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!canDrag) return;
-        rectTransform.position = eventData.position;
+        if (!_canDrag) return;
+        _rectTransform.position = eventData.position;
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (!canDrag) return;
-        if (RectTransformUtility.RectangleContainsScreenPoint(faceZoneUI, eventData.position))
+        if (!_canDrag) return;
+        if (RectTransformUtility.RectangleContainsScreenPoint(_faceZoneUI, eventData.position))
         {
             StartInteraction();
         }
@@ -113,34 +131,34 @@ public class HandController : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void StartInteraction()
     {
-        canDrag = false;
+        _canDrag = false;
 
         float radius = 80f;
-        Vector3 center = rectTransform.position;
+        Vector3 center = _rectTransform.position;
 
         Sequence applySequence = DOTween.Sequence();
-        applySequence.Append(rectTransform.DOMove(center + new Vector3(radius, radius, 0), 0.2f));
-        applySequence.Append(rectTransform.DOMove(center + new Vector3(-radius, radius, 0), 0.2f));
-        applySequence.Append(rectTransform.DOMove(center + new Vector3(-radius, -radius, 0), 0.2f));
-        applySequence.Append(rectTransform.DOMove(center + new Vector3(radius, -radius, 0), 0.2f));
+        applySequence.Append(_rectTransform.DOMove(center + new Vector3(radius, radius, 0), 0.2f));
+        applySequence.Append(_rectTransform.DOMove(center + new Vector3(-radius, radius, 0), 0.2f));
+        applySequence.Append(_rectTransform.DOMove(center + new Vector3(-radius, -radius, 0), 0.2f));
+        applySequence.Append(_rectTransform.DOMove(center + new Vector3(radius, -radius, 0), 0.2f));
         applySequence.OnComplete(() => {
 
             Sprite spriteToApply = null;
-            if (selectedColor.type != ItemType.Cream && selectedColor.makeUpData != null)
-                spriteToApply = selectedColor.makeUpData.GetSprite(selectedColor.type, selectedColor.colorIndex);
+            if (_selectedColor.type != ItemType.Cream && _selectedColor.makeUpData != null)
+                spriteToApply = _selectedColor.makeUpData.GetSprite(_selectedColor.type, _selectedColor.colorIndex);
 
-            girl.ApplyItem(selectedColor.type, spriteToApply);
+            _girl.ApplyItem(_selectedColor.type, spriteToApply);
             ReturnItem();
         });
     }
 
     private void ReturnHand()
     {
-        if (currentItem != null && currentItem.transform.childCount > 0)
+        if (_currentItem != null && _currentItem.transform.childCount > 0)
         {
-            var brushTip = currentItem.transform.GetChild(0).GetComponent<Image>();
+            var brushTip = _currentItem.transform.GetChild(0).GetComponent<Image>();
             if (brushTip != null) brushTip.color = Color.white;
         }
-        rectTransform.DOMove(handDefaultPos, 0.6f).SetEase(Ease.OutBack);
+        _rectTransform.DOMove(_handDefaultPos, 0.6f).SetEase(Ease.OutBack);
     }
 }
